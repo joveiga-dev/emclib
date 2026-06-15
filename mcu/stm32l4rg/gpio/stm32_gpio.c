@@ -1,10 +1,8 @@
-#ifndef STM32_GPIO_H
-#define STM32_GPIO_H
-
 //#include "gpio_ops.h"
 #include "stm32_gpio_regs.h"
-#include "stm32_rcc.h"
+#include "stm32_gpio.h"
 #include <stddef.h>
+#include "emc_rcc.h"
 
 static GPIO_RegDef_t *_stm32_gpio_port_mapper(emc_gpio_port_t port) {
     switch (port) {
@@ -98,6 +96,9 @@ static void _stm32_gpio_set_af(emc_gpio_port_t port, uint8_t pin, uint8_t af)
     p->AFR[afr_index] |= ((uint32_t)(af & 0xFUL) << shift); 
 }
 
+
+
+
 int stm32_gpio_init(emc_gpio_t *gpio, const emc_gpio_config_t *cfg)
 {
     if (gpio == NULL || cfg == NULL || gpio->pin >= 16U) {
@@ -109,7 +110,7 @@ int stm32_gpio_init(emc_gpio_t *gpio, const emc_gpio_config_t *cfg)
         return -1;
     }
 
-    stm32_rcc_enable_gpio_clock(gpio->port);
+    emc_rcc_enable((emc_rcc_periph_t)gpio->port);
 
     _stm32_gpio_set_mode(gpio->port, gpio->pin, cfg->mode);
     _stm32_gpio_set_otype(gpio->port, gpio->pin, cfg->otype);
@@ -196,6 +197,3 @@ void stm32_gpio_toggle(const emc_gpio_t *gpio)
     }
 
 }
-
-
-#endif // STM32_GPIO_H

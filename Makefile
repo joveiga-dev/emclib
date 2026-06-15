@@ -73,6 +73,7 @@ LDFLAGS := \
 SRCS := \
 	examples/blinky/main.c \
 	core/emc_gpio.c \
+	core/emc_rcc.c \
 	mcu/stm32l4rg/gpio/stm32_gpio.c \
 	mcu/stm32l4rg/rcc/stm32_rcc.c \
 	mcu/stm32l4rg/startup/stm32l4rg_boot.c

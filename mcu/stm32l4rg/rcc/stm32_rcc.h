@@ -1,5 +1,5 @@
-#ifndef STM_32_RCC_H
-#define STM_32_RCC_H
+#ifndef STM32_RCC_H
+#define STM32_RCC_H
 
 /*
  * @file stm32_rcc.h
@@ -8,7 +8,7 @@
  */
 
 #include "stm32l4xx.h"
-#include "emc_gpio.h"
+#include "emc_rcc.h"
 #include <stdint.h>
 
 typedef struct {
@@ -64,10 +64,12 @@ typedef struct {
 #define RCC_APB2ENR_USART1EN    (1U << 14) 
 
 
+
 // Function prototypes
+int stm32_rcc_enable(emc_rcc_periph_t periph);
+int stm32_rcc_disable(emc_rcc_periph_t periph);
+int stm32_rcc_reset(emc_rcc_periph_t periph);
+uint32_t stm32_rcc_get_sysclk_freq(void);
 
-void stm32_rcc_enable_gpio_clock(emc_gpio_port_t port);
-void stm32_rcc_disable_gpio_clock(emc_gpio_port_t port);
 
-
-#endif // STM_32_RCC_H
+#endif // STM32_RCC_H

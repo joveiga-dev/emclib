@@ -3,7 +3,8 @@
 
 /*
  * @file emc_gpio.h
- * @brief GPIO library
+ * @brief GPIO library for embedded microcontroller projects
+ * @author JC
  */
 
 #include <stdint.h>
