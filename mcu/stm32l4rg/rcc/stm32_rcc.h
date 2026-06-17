@@ -47,6 +47,7 @@ typedef struct {
 } RCC_RegDef_t;
 
 #define RCC ((RCC_RegDef_t *)RCC_BASE)
+
 #define RCC_AHB2ENR_GPIOHEN       (1U << 7)
 #define RCC_AHB2ENR_GPIOGEN       (1U << 6)
 #define RCC_AHB2ENR_GPIOFEN       (1U << 5)

@@ -4,6 +4,7 @@
 /*
  * @file emc_rcc.h
  * @brief RCC library for STM32L4RG
+ * RCC - Peripheral Power/Reset Control
  * @author JC
  */
 

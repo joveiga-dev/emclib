@@ -104,3 +104,8 @@ int stm32_rcc_reset(emc_rcc_periph_t periph)
     *(desc->reset_reg) &= ~(desc->mask);
     return 0;
 }
+
+uint32_t stm32_rcc_get_sysclk_freq(void)
+{
+    return 4000000; // 4MHZ for now
+}

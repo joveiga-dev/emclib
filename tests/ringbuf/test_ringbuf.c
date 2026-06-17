@@ -1,9 +1,28 @@
+/**
+ * @file test_ringbuf.c
+ * 
+ * Unit tests for emc_ringbuf
+ * 
+ * @author JC
+ * 
+ */
+
+
 #include <stdio.h>
 #include <assert.h>
 #include "emc_ringbuf.h"
 
 static uint8_t BUFFER[8];
-static struct emc_ringbuf_s rb;
+static struct emc_ringbuf rb;
+
+void setup(void) {}
+void teardown(void) {}
+
+void _test_write_read(struct emc_ringbuf *rb, uint8_t *buf, uint32_t size);
+
+
+
+
 
 void test_write_read(void) {
     emc_ringbuf_init(&rb, BUFFER, sizeof(BUFFER));

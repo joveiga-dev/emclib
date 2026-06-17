@@ -1,13 +1,11 @@
 #include "emc_gpio.h"
+#include "emc_time.h"
 
-static void delay(volatile uint32_t count)
-{
-    while (count--)
-        ;
-}
 
 int main(void)
 {
+    emc_time_init(1000U);    /* 1ms tick */ 
+    
     emc_gpio_t led = { 
         .port = EMC_GPIO_PORTA, 
         .pin = 5
@@ -25,7 +23,7 @@ int main(void)
     while (1)
     {
         emc_gpio_toggle(&led);
-        delay(200000);
+        emc_time_delay_ms(100);
     }
 
     return 0;

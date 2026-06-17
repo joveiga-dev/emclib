@@ -1,0 +1,11 @@
+#Build files
+*.o
+*.exe
+*.out
+*.elf
+*.bin
+*.map
+*.hex
+
+
+build/

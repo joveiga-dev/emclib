@@ -34,7 +34,8 @@ INCLUDES := \
 	-Iinclude \
 	-Imcu/stm32l4rg \
 	-Imcu/stm32l4rg/gpio \
-	-Imcu/stm32l4rg/rcc
+	-Imcu/stm32l4rg/rcc \
+	-Imcu/stm32l4rg/time
 
 ################################################################################
 # Compiler
@@ -74,8 +75,10 @@ SRCS := \
 	examples/blinky/main.c \
 	core/emc_gpio.c \
 	core/emc_rcc.c \
+	core/emc_time.c \
 	mcu/stm32l4rg/gpio/stm32_gpio.c \
 	mcu/stm32l4rg/rcc/stm32_rcc.c \
+	mcu/stm32l4rg/time/stm32_time.c \
 	mcu/stm32l4rg/startup/stm32l4rg_boot.c
 
 ################################################################################

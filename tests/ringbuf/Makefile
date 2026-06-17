@@ -1,11 +1,10 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -std=c11
 
-INCLUDES = -I../../core/include \
-           -I../../include
+INCLUDES = -I../../libs/
 
 SRCS = test_ringbuf.c \
-	   ../../core/src/emc_ringbuf.c
+	   ../../libs/emc_ringbuf.c
 
 OBJS = $(SRCS:.c=.o)
 
@@ -30,7 +29,7 @@ $(TARGET): $(OBJS)
 clean:
 	$(RM) *.o
 	$(RM) $(TARGET)$(EXE)
-	$(RM) ..\..\core\src\*.o
+	$(RM) ..\..\libs\*.o
 
 
 run: $(TARGET)

@@ -59,9 +59,10 @@ typedef struct {
     uint8_t alternate_function;       /*!< GPIO alternate function (0-15), valid only if mode is EMC_GPIO_MODE_AF */
 } emc_gpio_config_t;
 
-
+// API functions
 int emc_gpio_init(emc_gpio_t *gpio, const emc_gpio_config_t *cfg);
 void emc_gpio_deinit(emc_gpio_t *gpio);
+
 void emc_gpio_write(const emc_gpio_t *gpio, bool state);
 bool emc_gpio_read(const emc_gpio_t *gpio);
 void emc_gpio_toggle(const emc_gpio_t *gpio);
