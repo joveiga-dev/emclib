@@ -1,8 +1,8 @@
 //#include "gpio_ops.h"
 #include "stm32_gpio_regs.h"
 #include "stm32_gpio.h"
-#include <stddef.h>
-#include "emc_rcc.h"
+#include "emc_periph.h"
+#include "emc_gpio.h"
 
 static GPIO_RegDef_t *_stm32_gpio_port_mapper(emc_gpio_port_t port) {
     switch (port) {
@@ -99,18 +99,18 @@ static void _stm32_gpio_set_af(emc_gpio_port_t port, uint8_t pin, uint8_t af)
 
 
 
-int stm32_gpio_init(emc_gpio_t *gpio, const emc_gpio_config_t *cfg)
+emc_result_t stm32_gpio_init(const emc_gpio_t *gpio, const emc_gpio_config_t *cfg)
 {
     if (gpio == NULL || cfg == NULL || gpio->pin >= 16U) {
-        return -1;
+        return EMC_STATUS_ERR; // Invalid parameters
     }
 
     GPIO_RegDef_t *regs = _stm32_gpio_port_mapper(gpio->port);
     if (regs == NULL) {
-        return -1;
+        return EMC_STATUS_ERR; // Invalid parameters
     }
 
-    emc_rcc_enable((emc_rcc_periph_t)gpio->port);
+    emc_periph_enable((emc_periph_t)gpio->port);
 
     _stm32_gpio_set_mode(gpio->port, gpio->pin, cfg->mode);
     _stm32_gpio_set_otype(gpio->port, gpio->pin, cfg->otype);
@@ -121,14 +121,14 @@ int stm32_gpio_init(emc_gpio_t *gpio, const emc_gpio_config_t *cfg)
         _stm32_gpio_set_af(gpio->port, gpio->pin, cfg->alternate_function);
     }
 
-    return 0; // Success
+    return EMC_STATUS_OK; 
 }
 
-void stm32_gpio_deinit(emc_gpio_t *gpio)
+emc_result_t stm32_gpio_deinit(const emc_gpio_t *gpio)
 {
     GPIO_RegDef_t *p = _stm32_gpio_port_mapper(gpio->port);
     if (p == NULL) {
-        return; // Not initialized or invalid port
+        return EMC_STATUS_ERR; // Not initialized or invalid port
     }
 
     _stm32_gpio_set_mode(gpio->port, gpio->pin, EMC_GPIO_MODE_AN);
@@ -137,63 +137,78 @@ void stm32_gpio_deinit(emc_gpio_t *gpio)
     _stm32_gpio_set_pupd(gpio->port, gpio->pin, EMC_GPIO_PUPD_NONE);
     _stm32_gpio_set_af(gpio->port, gpio->pin, 0);
 
+    return EMC_STATUS_OK;
 }
 
-void stm32_gpio_write(const emc_gpio_t *gpio, bool state)
+emc_result_t stm32_gpio_write(const emc_gpio_t *gpio, emc_gpio_pin_state_t state)
 {
     GPIO_RegDef_t *regs = _stm32_gpio_port_mapper(gpio->port);
     if (regs == NULL) {
-        return; // Not initialized or invalid port
+        return EMC_STATUS_ERR; // Not initialized or invalid port
     }
 
-    if (state) {
+    if (state == EMC_GPIO_PIN_STATE_HIGH) {
         regs->BSRR = (1U << gpio->pin);
     } else {
         regs->BSRR = (1U << (gpio->pin + 16U));
     }
+    return EMC_STATUS_OK;
 }
 
-void stm32_gpio_set(const emc_gpio_t *gpio)
+emc_result_t stm32_gpio_set(const emc_gpio_t *gpio)
 {
     GPIO_RegDef_t *p = _stm32_gpio_port_mapper(gpio->port);
     if (p == NULL) {
-        return; // Not initialized or invalid port
+        return EMC_STATUS_ERR; // Not initialized or invalid port
     }
 
     p->BSRR = (1U << gpio->pin);
+    return EMC_STATUS_OK;
 }
 
-void stm32_gpio_clear(const emc_gpio_t *gpio)
+emc_result_t stm32_gpio_clear(const emc_gpio_t *gpio)
 {
     GPIO_RegDef_t *p = _stm32_gpio_port_mapper(gpio->port);
     if (p == NULL) {
-        return; // Not initialized or invalid port
+        return EMC_STATUS_ERR; // Not initialized or invalid port
     }
 
     p->BSRR = (1U << (gpio->pin + 16U));
+    return EMC_STATUS_OK;
 }
 
-bool stm32_gpio_read(const emc_gpio_t *gpio)
+emc_result_t stm32_gpio_read(const emc_gpio_t *gpio, emc_gpio_pin_state_t *state)
 {
     GPIO_RegDef_t *p = _stm32_gpio_port_mapper(gpio->port);
     if (p == NULL) {
-        return false;
+        return EMC_STATUS_ERR;
     }
 
-    return (p->IDR & (1U << gpio->pin)) != 0; 
+    if (state == NULL) {
+        return EMC_STATUS_ERR; // Invalid parameter
+    }
+
+    *state = (p->IDR & (1UL << gpio->pin)) ? EMC_GPIO_PIN_STATE_HIGH : EMC_GPIO_PIN_STATE_LOW;
+    return EMC_STATUS_OK;
 }
 
-void stm32_gpio_toggle(const emc_gpio_t *gpio)
+emc_result_t stm32_gpio_toggle(const emc_gpio_t *gpio)
 {
     GPIO_RegDef_t *p = _stm32_gpio_port_mapper(gpio->port);
     if (p == NULL) {
-        return; // Not initialized or invalid port
+        return EMC_STATUS_ERR; // Not initialized or invalid port
     }
 
-    if (stm32_gpio_read(gpio)) {
+    emc_gpio_pin_state_t state;
+    if (stm32_gpio_read(gpio, &state) != EMC_STATUS_OK) {
+        return EMC_STATUS_ERR;
+    }
+
+    if (state == EMC_GPIO_PIN_STATE_HIGH) {
         stm32_gpio_clear(gpio);
     } else {
         stm32_gpio_set(gpio);
     }
 
+    return EMC_STATUS_OK;
 }

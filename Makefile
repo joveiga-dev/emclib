@@ -2,7 +2,7 @@
 # Target
 ################################################################################
 
-TARGET := blinky
+TARGET := button_polling
 
 ################################################################################
 # Toolchain
@@ -32,10 +32,13 @@ BUILD_DIR := build
 
 INCLUDES := \
 	-Iinclude \
+	-Icore/logging \
 	-Imcu/stm32l4rg \
 	-Imcu/stm32l4rg/gpio \
-	-Imcu/stm32l4rg/rcc \
-	-Imcu/stm32l4rg/time
+	-Imcu/stm32l4rg/clock \
+	-Imcu/stm32l4rg/time \
+	-Imcu/stm32l4rg/uart \
+	-Imcu/stm32l4rg/spi \
 
 ################################################################################
 # Compiler
@@ -64,22 +67,34 @@ LDFLAGS := \
 	-Wl,-Map=$(BUILD_DIR)/$(TARGET).map \
 	-Wl,--gc-sections \
 	-Wl,--print-memory-usage \
-	-nostdlib \
-	-nostartfiles
+	-specs=nano.specs \
+	-nostartfiles \
+
+
 
 ################################################################################
 # Sources
 ################################################################################
 
 SRCS := \
-	examples/blinky/main.c \
+	examples/button/button_polling/main.c \
 	core/emc_gpio.c \
-	core/emc_rcc.c \
+	core/emc_periph.c \
+	core/emc_clock.c \
 	core/emc_time.c \
+	core/emc_timer.c \
+	core/emc_uart.c \
+	core/emc_spi.c \
+	core/emc_button.c \
+	core/logging/emc_log.c \
 	mcu/stm32l4rg/gpio/stm32_gpio.c \
-	mcu/stm32l4rg/rcc/stm32_rcc.c \
+	mcu/stm32l4rg/clock/stm32_clock.c \
+	mcu/stm32l4rg/clock/stm32_periph.c \
 	mcu/stm32l4rg/time/stm32_time.c \
-	mcu/stm32l4rg/startup/stm32l4rg_boot.c
+	mcu/stm32l4rg/uart/stm32_usart.c \
+	mcu/stm32l4rg/spi/stm32_spi.c \
+	mcu/stm32l4rg/startup/syscalls.c \
+	mcu/stm32l4rg/startup/stm32l4rg_boot.c \
 
 ################################################################################
 # Objects

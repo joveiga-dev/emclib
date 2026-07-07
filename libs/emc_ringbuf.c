@@ -1,8 +1,10 @@
 #include "emc_ringbuf.h"
 
-
-static bool is_power_of_two(uint32_t n) {
-    return (n != 0) && ((n & (n - 1)) == 0);
+/*
+* Check if number is a power of two.
+*/
+static bool ringbuf_is_power_of_two(uint32_t n) {
+    return (n != 0) && ((n & (~n + 1)) == n);
 }
 
 emc_ringbuf_status_t emc_ringbuf_init(struct emc_ringbuf *rb, uint8_t *buf, uint32_t size)
@@ -11,7 +13,7 @@ emc_ringbuf_status_t emc_ringbuf_init(struct emc_ringbuf *rb, uint8_t *buf, uint
         return RINGBUF_ERROR_INVALID_PARAM;
     }
 
-    if (!is_power_of_two(size)) {
+    if (!ringbuf_is_power_of_two(size)) {
         return RINGBUF_ERROR_INVALID_SIZE;
     }
 

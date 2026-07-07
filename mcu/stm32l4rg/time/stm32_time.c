@@ -1,32 +1,45 @@
 #include "stm32_time.h"
 #include "stm32l4xx.h"
-#include "stm32_rcc.h"
+#include "stm32_clock.h"
 
 typedef struct {
-    volatile uint32_t SYST_CSR;   /* offset: 0x000 (R/W) SysTick Control and Status Register */
-    volatile uint32_t SYST_RVR;   /* offset: 0x004 (R/W) SysTick Reload and Value Register */
-    volatile uint32_t SYST_CVR;   /* offset: 0x008 (R/W) SysTick Current Value Register */
-    volatile uint32_t SYST_CALIB; /* offset 0x00C (R/ )  SysTick Calibration Value Register*/
+    // SysTick Control and Status Register
+    // COUNTFLAG   Returns 1 if the timer counted to 0 since last time was read
+    // CLKSOURCE   SysTick clock source
+    // TICKINIT    Enables SysTick exception request
+    // ENABLE      Enable SysTick counter
+    volatile uint32_t syst_csr;
+    // SysTick Reload Value Register 
+    // 0x00ffffff [23:0] RELOAD        The value to load into the SysTick Current Value Register when the counter reaches 0.  
+    volatile uint32_t syst_rvr; 
+    // SysTick Current Value Register
+    // 0x00ffffff [23:0] CURRENT       The current value of the SysTick counter. This value is decremented by 1 every clock cycle. When it reaches 0, it is reloaded with the value in the SysTick Reload Value Register (SYST_RVR).  
+    volatile uint32_t syst_cvr;
+    // SysTick Calibration Value Register
+    // 0X80000000 [31] NOREF         Indicates whether the reference clock is provided
+    // 0X40000000 [30] SKEW          Indicates whether the calibration
+    // 0x00ffffff [23:0] TENMS         Indicates the number of clock cycles for 10ms
+    volatile uint32_t syst_calib; 
 } Systick_RegDef_t;
 
-#define SYSTICK ((Systick_RegDef_t *)SYSTICK_BASE)
+#define systick_hw_desc ((Systick_RegDef_t *)SYSTICK_BASE)
 
 static volatile uint32_t s_ticks = 0;
 
 static void systick_start(uint32_t reload)
 {
-    SYSTICK->SYST_RVR = reload; 
-    SYSTICK->SYST_CVR = 0UL; 
-    SYSTICK->SYST_CSR = SYSTICK_CSR_CLKSOURCE | 
-                        SYSTICK_CSR_TICKINT   | 
-                        SYSTICK_CSR_ENABLE;
+    systick_hw_desc->syst_rvr = reload; 
+    systick_hw_desc->syst_cvr = 0UL; 
+    systick_hw_desc->syst_csr = SYSTICK_CSR_CLKSOURCE | 
+                                 SYSTICK_CSR_TICKINT   | 
+                                 SYSTICK_CSR_ENABLE;
 }
 
 static void systick_stop(void)
 {
-    SYSTICK->SYST_CSR &= ~SYSTICK_CSR_TICKINT;
-    SYSTICK->SYST_CSR &= ~SYSTICK_CSR_ENABLE;
-    SYSTICK->SYST_CVR = 0;
+    systick_hw_desc->syst_csr &= ~SYSTICK_CSR_TICKINT;
+    systick_hw_desc->syst_csr &= ~SYSTICK_CSR_ENABLE;
+    systick_hw_desc->syst_cvr = 0;
 }
 
 void SysTick_Handler(void)
@@ -66,7 +79,7 @@ void stm32_time_delay_ms(uint32_t ms)
 void stm32_time_delay_us(uint32_t us)
 {
     uint32_t start_tick = stm32_time_get();
-    uint32_t delay_ticks = (us * (stm32_rcc_get_sysclk_freq() / 1000000U)) / (SYSTICK->SYST_RVR + 1U);
+    uint32_t delay_ticks = (us * (stm32_rcc_get_sysclk_freq() / 1000000U)) / (systick_hw_desc->syst_rvr + 1U);
 
     while ((stm32_time_get() - start_tick) < delay_ticks) {
         __asm volatile ("WFI");

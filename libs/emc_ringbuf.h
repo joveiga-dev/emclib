@@ -20,14 +20,21 @@ typedef enum {
 } emc_ringbuf_status_t;
 
 struct emc_ringbuf {
-    uint8_t *buf;
+    uint8_t *buf;         /*!< pointer to the buffer memory */
     uint32_t write_idx;   /*!< head - written ONLY by producer */
     uint32_t read_idx;    /*!< tail - written ONLY by consumer */
     uint32_t buf_size;    /*!< size of the buffer, must be a power of two */
     uint32_t mask;        /*!< mask for index wrapping, buf_size -1 */
 };
 
-// API functions prototypes
+
+/**
+ * Initializes ring buffer object
+ * @param rb ring buffer to initialize
+ * @param buf memory buffer to store data
+ * @param size size of the buffer, must be a power of two
+ * @return RINGBUF_OK on success, error code otherwise
+ */
 emc_ringbuf_status_t emc_ringbuf_init(struct emc_ringbuf *rb, uint8_t *buf, uint32_t size);
 void emc_ringbuf_clear(struct emc_ringbuf *rb);
 

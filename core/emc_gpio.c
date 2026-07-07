@@ -2,29 +2,29 @@
 //#include "gpio_ops.h"
 #include "stm32_gpio.h"
 
-int emc_gpio_init(emc_gpio_t *gpio, const emc_gpio_config_t *cfg)
+emc_result_t emc_gpio_init(const emc_gpio_t *gpio, const emc_gpio_config_t *cfg)
 {
     return stm32_gpio_init(gpio, cfg);
 }
 
-void emc_gpio_deinit(emc_gpio_t *gpio)
+emc_result_t emc_gpio_deinit(const emc_gpio_t *gpio)
 {
-    stm32_gpio_deinit(gpio);
+    return stm32_gpio_deinit(gpio);
 }
 
-void emc_gpio_write(const emc_gpio_t *gpio, bool state)
+emc_result_t emc_gpio_write(const emc_gpio_t *gpio, emc_gpio_pin_state_t state)
 {
-    stm32_gpio_write(gpio, state);
+    return stm32_gpio_write(gpio, state);
 }
 
-bool emc_gpio_read(const emc_gpio_t *gpio)
+emc_result_t emc_gpio_read(const emc_gpio_t *gpio, emc_gpio_pin_state_t *state)
 {
-    return stm32_gpio_read(gpio);
+    return stm32_gpio_read(gpio, state);
 }
 
-void emc_gpio_toggle(const emc_gpio_t *gpio)
+emc_result_t emc_gpio_toggle(const emc_gpio_t *gpio)
 {
-    stm32_gpio_toggle(gpio);
+    return stm32_gpio_toggle(gpio);
 }
 
 

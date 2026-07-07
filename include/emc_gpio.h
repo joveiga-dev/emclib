@@ -7,8 +7,7 @@
  * @author JC
  */
 
-#include <stdint.h>
-#include <stdbool.h>
+#include "emc_common.h"
 
 typedef enum {
     EMC_GPIO_PORTA = 0,
@@ -20,6 +19,11 @@ typedef enum {
     EMC_GPIO_PORTG,
     EMC_GPIO_PORTH,
 } emc_gpio_port_t;
+
+typedef enum {
+    EMC_GPIO_PIN_STATE_LOW = 0,  /*!< Pin state low (0) */
+    EMC_GPIO_PIN_STATE_HIGH = 1, /*!< Pin state high (1) */
+} emc_gpio_pin_state_t;
 
 typedef enum {
     EMC_GPIO_MODE_IN = 0X00,   /*!< Input mode */
@@ -60,12 +64,12 @@ typedef struct {
 } emc_gpio_config_t;
 
 // API functions
-int emc_gpio_init(emc_gpio_t *gpio, const emc_gpio_config_t *cfg);
-void emc_gpio_deinit(emc_gpio_t *gpio);
+emc_result_t emc_gpio_init(const emc_gpio_t *gpio, const emc_gpio_config_t *cfg);
+emc_result_t emc_gpio_deinit(const emc_gpio_t *gpio);
 
-void emc_gpio_write(const emc_gpio_t *gpio, bool state);
-bool emc_gpio_read(const emc_gpio_t *gpio);
-void emc_gpio_toggle(const emc_gpio_t *gpio);
-void emc_gpio_set(const emc_gpio_t *gpio);
-void emc_gpio_reset(const emc_gpio_t *gpio);
+emc_result_t emc_gpio_write(const emc_gpio_t *gpio, emc_gpio_pin_state_t state);
+emc_result_t emc_gpio_read(const emc_gpio_t *gpio, emc_gpio_pin_state_t *state);
+emc_result_t emc_gpio_toggle(const emc_gpio_t *gpio);
+emc_result_t emc_gpio_set(const emc_gpio_t *gpio);
+emc_result_t emc_gpio_reset(const emc_gpio_t *gpio);
 #endif // EMC_GPIO_H

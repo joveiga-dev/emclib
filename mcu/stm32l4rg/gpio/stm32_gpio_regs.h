@@ -12,8 +12,6 @@ typedef struct {
     volatile uint32_t AFR[2];
 } GPIO_RegDef_t;
 
-
-    
 #define GPIO_OFFSET (0x400U)
 #define GPIOA_BASE           (PERIPH_AHB2_BASE + 0x0000U)
 #define GPIOB_BASE           (GPIOA_BASE + GPIO_OFFSET)

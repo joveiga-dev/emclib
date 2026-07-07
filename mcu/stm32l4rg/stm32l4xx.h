@@ -1,5 +1,6 @@
 #pragma once
 #include <stdint.h>
+#include "emc_common.h"
 
 #define FLASH_BASE                 (0x08000000U)
 #define SRAM_BASE                  (0x20000000U)
@@ -13,11 +14,11 @@
 #define PERIPH_AHB1_BASE           (PERIPH_BASE + 0x20000U)
 #define PERIPH_AHB2_BASE           (0x48000000U)
 
-#define RCC_AHB2ENR_OFFSET           (0x4CU)
-#define SCS_BASE                     (0xE000E000UL)
-#define SYSTICK_BASE                 (SCS_BASE + 0x0010UL)
-#define RCC_BASE                     (PERIPH_AHB1_BASE + 0x1000U)
-#define FLASH_REGISTER_BASE          (PERIPH_AHB1_BASE + 0x2000U)
+#define RCC_AHB2ENR_OFFSET         (0x4CU)
+#define SCS_BASE                   (0xE000E000UL)
+#define SYSTICK_BASE               (SCS_BASE + 0x0010UL)
+#define RCC_BASE                   (PERIPH_AHB1_BASE + 0x1000U)
+#define FLASH_REGISTER_BASE        (PERIPH_AHB1_BASE + 0x2000U)
 
 
 #define LPUART1_BASE            (PERIPH_AHB1_BASE + 0x8000U)
@@ -72,6 +73,50 @@
 #define USART_CR3_RTSE BIT(8)
 #define USART_CR3_CTSE BIT(9)
 
+/* SPI definitions */
+
+#define SPI1_BASE (PERIPH_APB2_BASE + 0x3000U)
+#define SPI2_BASE (PERIPH_APB1_BASE + 0x3800U)
+#define SPI3_BASE (PERIPH_APB1_BASE + 0x3C00U)
+
+/* SPI_CR1 Control Register 1 */
+#define SPI_CR1_CPHA   (0x1U << 0)  // Clock phase
+#define SPI_CR1_CPOL   (0x1U << 1)  // Clock polarity  0: CK to 0 when idle, 1: CK to 1 when idle
+#define SPI_CR1_MSTR   (0x1U << 2)  // Master selection -> 0: Slave, 1: Master
+#define SPI_CR1_BR_Pos (3U)         // Baud rate control
+#define SPI_CR1_BR_Msk (0x7U << SPI_CR1_BR_Pos)
+#define SPI_CR1_BR     SPI_CR1_BR_Msk
+#define SPI_CR1_SPE    (0x1U << 6)  // SPI enable -> 0: Disabled, 1: Enabled
+#define SPI_CR1_LSBFIRST (0x1U << 7) // Frame format -> 0: MSB first, 1: LSB first
+#define SPI_CR1_SSI    (0x1U << 8)  // Internal slave select
+#define SPI_CR1_SSM    (0x1U << 9)  // Software slave management
+#define SPI_CR1_RXONLY (0x1U << 10) // Receive only -> 0: Full duplex, 1: Receive only
+#define SPI_CR1_BIDIOE  (0x1U << 14) // Bidirectional data mode enable -> 0: 2-line unidirectional, 1: 1-line bidirectional
+#define SPI_CR1_BIDIMODE (0x1U << 15) // Bidirectional data mode enable -> 0: 2-line unidirectional, 1: 1-line bidirectional
+
+
+/* SPI_CR2 Control Register 2 */
+#define SPI_CR2_RXDMAEN (0x1U << 0)  // Rx buffer DMA enable -> 0: Disabled, 1: Enabled
+#define SPI_CR2_TXDMAEN (0x1U << 1)  // Tx buffer DMA enable -> 0: Disabled, 1: Enabled
+#define SPI_CR2_SSOE    (0x1U << 2)  // SS output enable -> 0: Disabled, 1: Enabled
+#define SPI_CR2_RXNEIE   (0x1U << 6)  // RX buffer not empty interrupt enable -> 0: Disabled, 1: Enabled
+#define SPI_CR2_TXEIE    (0x1U << 7)  // TX buffer empty interrupt enable -> 0: Disabled, 1: Enabled
+#define SPI_CR2_DS_Pos (8U)          // Data size
+#define SPI_CR2_DS_Msk (0xFU << SPI_CR2_DS_Pos)
+#define SPI_CR2_DS     SPI_CR2_DS_Msk
+#define SPI_CR2_FRXTH  (0x1U << 12) // FIFO reception threshold -> 0: 8-bit, 1: 16-bit
+
+/* SPI status Register SpI_SR*/
+#define SPI_SR_RXNE (0x1U << 0)  // Receive buffer not empty -> 0: RX buffer empty, 1: RX buffer not empty
+#define SPI_SR_TXE  (0x1U << 1)  // Transmit buffer empty -> 0: TX buffer not empty, 1: TX buffer empty
+#define SPI_SR_BSY  (0x1U << 7)  // Busy flag -> 0: SPI not busy, 1: SPI busy
+
+/* SPI data register SPI_DR*/
+#define SPI_DR_MASK (0xFFFFU) // Data register mask for 16-bit data
+#define SPI_DR_DATA_Pos (0U) // Data register position for 16-bit data
+#define SPI_DR_DATA_Msk (0xFFFFU << SPI_DR_DATA_Pos) // Data register mask for 16-bit data
+#define SPI_DR_DATA SPI_DR_DATA_Msk // Data register for 16-bit data
+
 /* Systick (system timer) Definitions */
 
 #define SYSTICK_CSR_ENABLE (BIT(0U))     /* Enables the counter: 0-> counter disabled, 1 counter enabled.*/
@@ -90,11 +135,6 @@
 #define SYSTICK_CALIB_NOREF BIT(31U) /* indicates if the device provides a reference clock to the processor. 0 yes and 1 not*/
 #define SYSTICK_CALIB_SKEW BIT(30U)
 #define SYSTICK_CALIB_TENMS (SYSTICK_RVR_RELOAD_Msk)
-
-#define MMIO8(addr) (*(volatile uint8_t *)(addr))
-#define MMIO16(addr) (*(volatile uint16_t *)(addr))
-#define MMIO32(addr) (*(volatile uint32_t *)(addr))
-#define MMIO64(addr) (*(volatile uint64_t *)(addr))
 
 /**
  * System Control Block (SCB)
@@ -160,6 +200,5 @@
 #define FLASH_CR_PER (1U << 1)  // Page erase
 #define FLASH_CR_PG (1U << 0)   // Programming
 
-#define BIT(pos) ((0x1UL) << pos)
 
 
