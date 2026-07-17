@@ -117,6 +117,107 @@
 #define SPI_DR_DATA_Msk (0xFFFFU << SPI_DR_DATA_Pos) // Data register mask for 16-bit data
 #define SPI_DR_DATA SPI_DR_DATA_Msk // Data register for 16-bit data
 
+
+// I2C definitions
+#define I2C1_BASE (PERIPH_APB1_BASE + 0x5400U)
+#define I2C2_BASE (PERIPH_APB1_BASE + 0x5800U)
+#define I2C3_BASE (PERIPH_APB1_BASE + 0x5C00U)
+
+/* I2Cx control Register 1*/
+#define I2C_CR1_PECEN          BIT(23)
+#define I2C_CR1_GCEN           BIT(19)  // General call enable
+#define I2C_CR1_NOSTRETCH      BIT(17)  // Clock stretching in slave mode disable
+#define I2C_CR1_SBC           BIT(16)  // Slave byte control
+#define I2C_CR1_RXDMAEN        BIT(15)  // DMA reception requests enable
+#define I2C_CR1_TXDMAEN        BIT(14)  // DMA transmission requests enable
+#define I2C_CR1_ANFOFF         BIT(12)  // Analog noise filter OFF
+#define I2C_CR1_DNF_Pos        (8U)     // Digital noise filter
+#define I2C_CR1_DNF_Msk        (0xFU << I2C_CR1_DNF_Pos)
+#define I2C_CR1_ERRIE          BIT(7)   // Error interrupt enable
+#define I2C_CR1_TCIE           BIT(6)   // Transfer complete interrupt enable
+#define I2C_CR1_STOPIE         BIT(5)   // STOP detection interrupt enable
+#define I2C_CR1_NACKIE         BIT(4)   // NACK received interrupt enable
+#define I2C_CR1_ADDRIE         BIT(3)   // Address match interrupt enable
+#define I2C_CR1_RXIE           BIT(2)   // RX interrupt enable
+#define I2C_CR1_TXIE           BIT(1)   // TX interrupt enable
+#define I2C_CR1_PE             BIT(0)   // Peripheral enable
+/* I2Cx control Register 2*/
+#define I2C_CR2_PECBYTE        BIT(26) // Packet error checking byte
+#define I2C_CR2_AUTOEND        BIT(25) // Automatic end mode
+#define I2C_CR2_RELOAD         BIT(24) // NBYTES reload mode
+// Bits 23:16  NBYTES[7:0]: Number of bytes
+#define I2C_CR2_NBYTES_Pos      (16U) // Number of bytes
+#define I2C_CR2_NBYTES_Msk      (0xFFU << I2C_CR2_NBYTES_Pos)
+#define I2C_CR2_NACK            BIT(15) // NACK generation (slave mode)
+#define I2C_CR2_STOP            BIT(14) // STOP condition generation
+#define I2C_CR2_START           BIT(13) // START condition generation
+#define I2C_CR2_HEAD10R         BIT(12) // 10-bit addressing header only read direction
+#define I2C_CR2_ADD10           BIT(11) //  0: 7-bit addressing mode, 1: 10-bit addressing mode
+#define I2C_CR2_RD_WRN          BIT(10) // Transfer direction (master mode) 0: write transfer, 1: read transfer
+// Bits 9:0  SADD[9:0]: Slave address (master mode)
+#define I2C_CR2_SADD_10BIT_Pos  (0U)  // Slave address (master mode)
+#define I2C_CR2_SADD_Msk        (0x3FFU << I2C_CR2_SADD_10BIT_Pos) // Slave address (master mode)
+#define I2C_CR2_SADD_7BIT_Pos   (1U)  // 7-bit addressing mode
+#define I2C_CR2_SADD_7BIT_Msk   (0x7FU << I2C_CR2_SADD_7BIT_Pos) // 7-bit addressing mode
+/* I2Cx timing register */
+#define I2C_TIMINGR_PRESC_Pos    (28U) // Timing prescaler
+#define I2C_TIMINGR_PRESC_Msk    (0xFU << I2C_TIMINGR_PRESC_Pos)
+#define I2C_TIMINGR_SCLDEL_Pos   (20U) // Data setup time
+#define I2C_TIMINGR_SCLDEL_Msk   (0xFU << I2C_TIMINGR_SCLDEL_Pos)
+#define I2C_TIMINGR_SDADEL_Pos   (16U) // Data hold
+#define I2C_TIMINGR_SDADEL_Msk   (0xFU << I2C_TIMINGR_SDADEL_Pos)
+#define I2C_TIMINGR_SCLH_Pos     (8U)  // SCL high period
+#define I2C_TIMINGR_SCLH_Msk     (0xFFU << I2C_TIMINGR_SCLH_Pos)
+#define I2C_TIMINGR_SCLL_Pos     (0U)  // SCL low period
+#define I2C_TIMINGR_SCLL_Msk     (0xFFU << I2C_TIMINGR_SCLL_Pos)
+/* I2C timeout register */
+#define I2C_TIMEOUTR_TEXTEN       BIT(31) // Timeout enable
+#define I2C_TIMEOUTR_TIMEOUTB_Pos (16U) // Bus timeout B
+#define I2C_TIMEOUTR_TIMEOUTB_Msk (0xFFFU << I2C_TIMEOUTR_TIMEOUTB_Pos)
+#define I2C_TIMEOUTR_TIMOUTEN     BIT(15) // Clock timeout enable
+#define I2C_TIMEOUTR_TIDLE        BIT(12) // Idle clock timeout detection
+#define I2C_TIMEOUTR_TIMEOUTA_Pos (0U) // Bus timeout A
+#define I2C_TIMEOUTR_TIMEOUTA_Msk (0xFFFU << I2C_TIMEOUTR_TIMEOUTA_Pos)
+/* I2C interrupt and status regiuster */
+#define I2C_ISR_ADDCODE_Pos       (17U) // Address match code
+#define I2C_ISR_ADDCODE_Msk       (0x7FU << I2C_ISR_ADDCODE_Pos)
+#define I2C_ISR_DIR               BIT(16) // Transfer direction (slave mode) 0: write transfer, 1: read transfer
+#define I2C_ISR_BUSY              BIT(15) // Bus busy
+#define I2C_ISR_ALERT             BIT(13) // SMBus alert
+#define I2C_ISR_TIMEOUT           BIT(12) // Timeout or Tlow error
+#define I2C_ISR_PECERR            BIT(11) // PEC error in reception
+#define I2C_ISR_OVR               BIT(10) // Overrun/Underrun
+#define I2C_ISR_ARLO              BIT(9)  // Arbitration lost
+#define I2C_ISR_BERR              BIT(8)  // Bus error
+#define I2C_ISR_TCR               BIT(7)  // Transfer complete reload
+#define I2C_ISR_TC                BIT(6)  // Transfer complete (master mode)
+#define I2C_ISR_STOPF             BIT(5)  // Stop detection flag
+#define I2C_ISR_NACKF             BIT(4)  // NACK received flag
+#define I2C_ISR_ADDR              BIT(3)  // Address matched (slave mode)
+#define I2C_ISR_RXNE              BIT(2)  // Receive data register not empty
+#define I2C_ISR_TXIS              BIT(1)  // Transmit interrupt status
+#define I2C_ISR_TXE               BIT(0)  // Transmit data register empty
+/* I2C interrupt clear register */
+#define I2C_ICR_ALERTCF           BIT(13) // SMBus alert clear flag
+#define I2C_ICR_TIMOUTCF           BIT(12) // Timeout clear flag
+#define I2C_ICR_PECCF              BIT(11) // PEC error clear flag
+#define I2C_ICR_OVRCF              BIT(10) // Overrun/Underrun clear flag
+#define I2C_ICR_ARLOCF             BIT(9)  // Arbitration lost clear flag
+#define I2C_ICR_BERRCF             BIT(8)  // Bus error clear flag
+#define I2C_ICR_STOPCF             BIT(5)  // Stop detection clear flag
+#define I2C_ICR_NACKCF             BIT(4)  // NACK clear
+#define I2C_ICR_ADDRCF             BIT(3)  // Address matched clear flag
+#define I2C_ICR_CLEAR_ALL_FLAGS    (I2C_ICR_ALERTCF  | \
+                                    I2C_ICR_TIMOUTCF | \
+                                    I2C_ICR_PECCF    | \
+                                    I2C_ICR_OVRCF    | \
+                                    I2C_ICR_ARLOCF   | \
+                                    I2C_ICR_BERRCF   | \
+                                    I2C_ICR_STOPCF   | \
+                                    I2C_ICR_NACKCF   | \
+                                    I2C_ICR_ADDRCF)
+
+
 /* Systick (system timer) Definitions */
 
 #define SYSTICK_CSR_ENABLE (BIT(0U))     /* Enables the counter: 0-> counter disabled, 1 counter enabled.*/

@@ -123,7 +123,7 @@ const int_handler_t vectors[] = {
     BusFault_Handler,
     UsageFault_Handler,
     0, // Reserved
-    0, // Reserved
+    0, // Reservedp
     0, // Reserved
     0, // Reserved
     SVC_Handler,

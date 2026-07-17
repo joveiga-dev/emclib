@@ -94,7 +94,7 @@ emc_result_t emc_button_poll(emc_button_handle_t *handle, emc_button_event_t *ev
         return EMC_STATUS_OK;
     }
 
-    if ((current_time_ms - handle->time_last_change) < handle->button->debounce_ms) {
+    if ((current_time_ms - handle->time_last_change) < (uint32_t) handle->button->debounce_ms) {
         return EMC_STATUS_OK;
     }
 

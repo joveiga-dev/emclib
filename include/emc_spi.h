@@ -12,14 +12,6 @@
 #include "emc_common.h"
 
 typedef enum {
-    EMC_SPI_OK = 0,
-    EMC_SPI_ERROR,
-    EMC_SPI_BUSY,
-    EMC_SPI_TIMEOUT
-
-} emc_spi_status_t;
-
-typedef enum {
     EMC_SPI1 = 0,
     EMC_SPI2,
     EMC_SPI3,
