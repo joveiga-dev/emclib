@@ -10,7 +10,7 @@ typedef enum {
 } emc_led_state_t;
 
 typedef struct {
-    const emc_gpio_t gpio;         /*!< GPIO configuration for the LED */
+    emc_gpio_t gpio;         /*!< GPIO configuration for the LED */
     bool active_high;               /*!< true if LED is active high, false if active low */
 } emc_led_t;
 

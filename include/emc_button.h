@@ -6,8 +6,6 @@
 #include "emc_common.h"
 #include "emc_gpio.h"
 
-#define BTN_USER_PIN           13
-#define BTN_USER_GPIO_PORT     EMC_GPIO_PORTC
 #define BBT_LONG_PRESS         600
 
 /**
@@ -15,10 +13,10 @@
  */
 typedef enum {
     EMC_BTN_EVENT_NONE = 0,
-    EMC_BTN_EVENT_PRESS,
-    EMC_BTN_EVENT_RELEASE,
-    EMC_BTN_EVENT_SHORT_PRESS,
-    EMC_BTN_EVENT_LONG_PRESS,   
+    EMC_BTN_EVENT_PRESS,          // Triggered when button is pressed
+    EMC_BTN_EVENT_RELEASE,        // Triggered when button is released after a press
+    EMC_BTN_EVENT_CLICK,         // Short press and release
+    EMC_BTN_EVENT_LONG_PRESS,   // event triggered when button is held for long_press_ms
     EMC_BTN_MAX
 } emc_button_event_t;
 

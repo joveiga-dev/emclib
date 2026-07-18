@@ -3,6 +3,6 @@ ROOT := ../..
 TARGET := blinky
 
 APP_SRCS := \
-	main.c
+	rgb_led.c \
 
 include $(ROOT)/Makefile

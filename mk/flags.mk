@@ -13,6 +13,7 @@ FPU_FLAGS ?=
 MCUFLAGS := -mcpu=$(CPU) -mthumb $(FPU_FLAGS)
 
 INC_DIRS := $(ROOT)/include \
+	$(ROOT)/include/drivers \
 	$(ROOT)/boards/$(BOARD) \
 	$(ROOT)/src/logging \
 	$(ROOT)/mcu/$(MCU) \

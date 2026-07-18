@@ -15,6 +15,7 @@ LIB_SRCS := \
 	$(ROOT)/src/emc_time.c \
 	$(ROOT)/src/emc_timer.c \
 	$(ROOT)/src/emc_uart.c \
+	$(ROOT)/src/drivers/emc_rgb_led.c \
 	$(ROOT)/boards/$(BOARD)/board_led.c \
 	$(ROOT)/mcu/$(MCU)/clock/stm32_clock.c \
 	$(ROOT)/mcu/$(MCU)/clock/stm32_periph.c \
