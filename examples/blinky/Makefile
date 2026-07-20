@@ -1,6 +1,6 @@
 ROOT := ../..
 
-TARGET := blinky
+TARGET := rgb_led
 
 APP_SRCS := \
 	rgb_led.c \

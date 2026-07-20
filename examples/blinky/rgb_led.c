@@ -5,23 +5,23 @@
 static emc_timer_t timer;
 
 static const emc_rgb_led_t rgb_leds = {
-    .red_led = {
+    .red = {
         .gpio = {
             .port = EMC_GPIO_PORTB,
             .pin = 5,
         },
         .active_high = true,
     },
-    .green_led = {
+    .green = {
         .gpio = {
-            .port = EMC_GPIO_PORTB,
+            .port = EMC_GPIO_PORTA,
             .pin = 9,
         },
         .active_high = true,
     },
-    .blue_led = {
+    .blue = {
         .gpio = {
-            .port = EMC_GPIO_PORTB,
+            .port = EMC_GPIO_PORTA,
             .pin = 8,
         },
         .active_high = true,
@@ -48,7 +48,14 @@ int main(void)
             if (on) {
                 emc_rgb_led_off(&rgb_leds);
             } else {
-                emc_rgb_led_set_color(&rgb_leds, EMC_RGB_LED_COLOR_RED);
+                {
+                    emc_rgb_led_color_code_t color = {
+                        .red_val = 255,
+                        .green_val = 0,
+                        .blue_val = 255
+                    };
+                    emc_rgb_led_set_color(&rgb_leds, &color);
+                }
             }
             on = !on;
             emc_timer_reset(&timer);

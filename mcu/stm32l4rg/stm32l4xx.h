@@ -269,6 +269,8 @@
 #define NVIC_ADDR_OFFSET(X) ((0X100) + (0X04) * (x))
 
 #define NVIC_BASE (0xE000E100UL)
+
+
 /* Flash key register */
 #define FLASH_KEYR_KEY1 ((uint32_t)0x45670123)
 #define FLASH_KEYR_KEY2 ((uint32_t)0xCDEF89AB)

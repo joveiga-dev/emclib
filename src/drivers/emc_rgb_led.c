@@ -1,15 +1,21 @@
 #include "emc_rgb_led.h"
 
-emc_result_t emc_rgb_led_init(const emc_rgb_led_t *rgb_instance)
+typedef emc_result_t (*emc_rgb_led_operation_t)(const emc_led_t *);
+
+static emc_result_t emc_rgb_led_apply(const emc_rgb_led_t *rgb, emc_rgb_led_operation_t op)
 {
-    emc_led_t *leds[3] = {
-        &rgb_instance->red, 
-        &rgb_instance->green, 
-        &rgb_instance->blue
+    if ((rgb == NULL) || (op == NULL)) {
+        return EMC_STATUS_ERR;
+    }
+
+    const emc_led_t *leds[EMC_RGB_CHANNEL_COUNT] = {
+        &rgb->red, 
+        &rgb->green, 
+        &rgb->blue
     };
 
-    for (uint8_t i = 0; i < 3; i++) {
-        emc_result_t res = emc_led_init(leds[i]);
+    for (uint8_t i = 0; i < EMC_RGB_CHANNEL_COUNT; i++) {
+        emc_result_t res = op(leds[i]);
         if (res != EMC_STATUS_OK) {
             return res;
         }
@@ -17,99 +23,47 @@ emc_result_t emc_rgb_led_init(const emc_rgb_led_t *rgb_instance)
     return EMC_STATUS_OK;
 }
 
-
-emc_result_t emc_rgb_led_deinit(const emc_rgb_led_t *rgb_instance)
+emc_result_t emc_rgb_led_init(const emc_rgb_led_t *rgb)
 {
-    if (rgb_instance == NULL) {
-        return EMC_STATUS_ERR;
-    }
-
-    emc_led_t *leds[3] = {
-        &rgb_instance->red, 
-        &rgb_instance->green, 
-        &rgb_instance->blue
-    };
-
-    for (uint8_t i = 0; i < 3; i++) {
-        emc_result_t res = emc_led_deinit(leds[i]);
-        if (res != EMC_STATUS_OK) {
-            return res;
-        }
-    }
-    return EMC_STATUS_OK;
+    return emc_rgb_led_apply(rgb, emc_led_init);
 }
 
-emc_result_t emc_rgb_led_set_color(const emc_rgb_led_t *rgb_instance, emc_rgb_led_color_t color)
+emc_result_t emc_rgb_led_deinit(const emc_rgb_led_t *rgb)
 {
-    if (rgb_instance == NULL) {
-        return EMC_STATUS_ERR;
-    }
-
-    switch (color) {
-        case EMC_RGB_LED_COLOR_OFF:
-            return emc_rgb_led_off(rgb_instance);
-            break;
-        case EMC_RGB_LED_COLOR_RED:
-            return emc_led_on(&rgb_instance->red);
-        case EMC_RGB_LED_COLOR_GREEN:
-            return emc_led_on(&rgb_instance->green);
-        case EMC_RGB_LED_COLOR_BLUE:
-            return emc_led_on(&rgb_instance->blue);
-        case EMC_RGB_LED_COLOR_YELLOW:
-            emc_led_on(&rgb_instance->red);
-            return emc_led_on(&rgb_instance->green);
-        case EMC_RGB_LED_COLOR_CYAN:
-            emc_led_on(&rgb_instance->green);
-            return emc_led_on(&rgb_instance->blue);
-        case EMC_RGB_LED_COLOR_MAGENTA:
-            emc_led_on(&rgb_instance->red);
-            return emc_led_on(&rgb_instance->blue);
-        case EMC_RGB_LED_COLOR_WHITE:
-            return emc_rgb_led_on(rgb_instance);
-        default:
-            return EMC_STATUS_NOT_SUPPORTED;
-    }
+    return emc_rgb_led_apply(rgb, emc_led_deinit);
 }
 
-emc_result_t emc_rgb_led_on(const emc_rgb_led_t *rgb_instance)
+emc_result_t emc_rgb_led_on(const emc_rgb_led_t *rgb)
 {
-    if (rgb_instance == NULL) {
-        return EMC_STATUS_ERR;
-    }
-
-    emc_led_t *leds[3] = {
-        &rgb_instance->red, 
-        &rgb_instance->green, 
-        &rgb_instance->blue
-    };
-
-    for (uint8_t i = 0; i < 3; i++) {
-        emc_result_t res = emc_led_on(leds[i]);
-        if (res != EMC_STATUS_OK) {
-            return res;
-        }
-    }
-    return EMC_STATUS_OK;
+    return emc_rgb_led_apply(rgb, emc_led_on);
 }
 
-emc_result_t emc_rgb_led_off(const emc_rgb_led_t *rgb_instance)
+emc_result_t emc_rgb_led_off(const emc_rgb_led_t *rgb)
 {
-    if (rgb_instance == NULL) {
+    return emc_rgb_led_apply(rgb, emc_led_off);
+}
+
+emc_result_t emc_rgb_led_set_color(const emc_rgb_led_t *rgb, const emc_rgb_led_color_code_t *color)
+{
+    if ((rgb == NULL) || (color == NULL)) {
         return EMC_STATUS_ERR;
     }
 
-    emc_led_t *leds[3] = {
-        &rgb_instance->red, 
-        &rgb_instance->green, 
-        &rgb_instance->blue
-    };
-
-    for (uint8_t i = 0; i < 3; i++) {
-        emc_result_t res = emc_led_off(leds[i]);
-        if (res != EMC_STATUS_OK) {
-            return res;
-        }
+    emc_result_t res = emc_rgb_led_off(rgb);
+    if (res != EMC_STATUS_OK) {
+        return res;
     }
+
+    if (color->red_val) {
+        emc_led_on(&rgb->red);
+    }
+    if (color->green_val) {
+        emc_led_on(&rgb->green);
+    }
+    if (color->blue_val) {
+        emc_led_on(&rgb->blue);
+    }
+
     return EMC_STATUS_OK;
 }
 
